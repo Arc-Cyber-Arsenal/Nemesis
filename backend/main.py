@@ -1,0 +1,161 @@
+"""
+Main FastAPI application
+"""
+# Provision the JWT signing key BEFORE anything else imports auth/config so
+# the application can never run with the hardcoded legacy default.
+from bootstrap_secrets import ensure_secret_key
+ensure_secret_key()
+
+from contextlib import asynccontextmanager
+
+from fastapi import Depends, FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
+
+from auth import get_current_user, require_admin, verify_mcp_api_key
+from config import settings
+from database import init_db
+from api import assessments, cards, recon, sections, containers, folders, global_commands, search, system, credentials, websocket, workspace, pending_commands, context_documents, source_code, auth, reports, timeline, notifications, templates, users, api_keys
+from api import commands
+from api.commands import global_router as commands_global_router
+from mcp_http_app import handle_mcp_request, mcp_lifespan
+from utils.logger import setup_logging, get_logger
+from middleware.logging_middleware import LoggingMiddleware
+from middleware.rate_limit import limiter, rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
+
+# Setup structured logging
+setup_logging(
+    log_level=settings.LOG_LEVEL,
+    log_format=settings.LOG_FORMAT,
+    log_dir=settings.LOG_DIR,
+    enable_file_logging=settings.LOG_FILE_ENABLED,
+    enable_console_logging=settings.LOG_CONSOLE_ENABLED,
+    max_bytes=settings.LOG_FILE_MAX_BYTES,
+    backup_count=settings.LOG_FILE_BACKUP_COUNT
+)
+
+logger = get_logger(__name__)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Application lifecycle: run migrations, start MCP session manager, yield."""
+    init_db()
+    logger.info(
+        "Application started",
+        project=settings.PROJECT_NAME,
+        version=settings.VERSION,
+        database=settings.DATABASE_URL.split("@")[-1],
+        workspace=settings.CONTAINER_WORKSPACE_BASE,
+        log_level=settings.LOG_LEVEL,
+        log_format=settings.LOG_FORMAT,
+        cors_origins=settings.BACKEND_CORS_ORIGINS,
+    )
+    # The MCP HTTP transport needs its session-manager task group alive for
+    # the lifetime of the app. The ``verify_mcp_api_key`` dependency gates
+    # the actual endpoint behind a feature flag, so spinning this up
+    # unconditionally is cheap and keeps the wiring simple.
+    async with mcp_lifespan():
+        yield
+
+
+# Create FastAPI app
+app = FastAPI(
+    title=settings.PROJECT_NAME,
+    version=settings.VERSION,
+    description=settings.PROJECT_TAGLINE,
+    lifespan=lifespan,
+)
+
+# Rate limiting
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, rate_limit_exceeded_handler)
+app.add_middleware(SlowAPIMiddleware)
+
+# Configure logging middleware (before CORS)
+app.add_middleware(LoggingMiddleware)
+
+# Configure CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.BACKEND_CORS_ORIGINS,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+    expose_headers=["*"],
+    max_age=3600,  # Cache preflight requests for 1 hour
+)
+
+# Routers requiring an authenticated user. Applied at include time so any new
+# router added here is protected by default — impossible to forget.
+protected = [Depends(get_current_user)]
+
+# Public routers (auth itself, websocket — token validated inside the handler).
+app.include_router(auth.router, prefix=settings.API_V1_PREFIX)
+app.include_router(websocket.router, prefix=settings.API_V1_PREFIX)
+
+# Protected routers
+app.include_router(assessments.router, prefix=settings.API_V1_PREFIX, dependencies=protected)
+app.include_router(cards.router, prefix=settings.API_V1_PREFIX, dependencies=protected)
+app.include_router(recon.router, prefix=settings.API_V1_PREFIX, dependencies=protected)
+app.include_router(commands.router, prefix=settings.API_V1_PREFIX, dependencies=protected)
+app.include_router(commands_global_router, prefix=settings.API_V1_PREFIX, dependencies=protected)
+app.include_router(credentials.router, prefix=settings.API_V1_PREFIX, dependencies=protected)
+app.include_router(global_commands.router, prefix=settings.API_V1_PREFIX, dependencies=protected)
+app.include_router(search.router, prefix=settings.API_V1_PREFIX, dependencies=protected)
+app.include_router(system.router, prefix=settings.API_V1_PREFIX, dependencies=protected)
+app.include_router(sections.router, prefix=settings.API_V1_PREFIX, dependencies=protected)
+app.include_router(containers.router, prefix=settings.API_V1_PREFIX, dependencies=protected)
+app.include_router(folders.router, prefix=settings.API_V1_PREFIX, dependencies=protected)
+app.include_router(workspace.router, prefix=settings.API_V1_PREFIX, dependencies=protected)
+app.include_router(pending_commands.router, prefix=settings.API_V1_PREFIX, dependencies=protected)
+app.include_router(pending_commands.settings_router, prefix=settings.API_V1_PREFIX, dependencies=protected)
+app.include_router(context_documents.router, prefix=settings.API_V1_PREFIX, dependencies=protected)
+app.include_router(source_code.router, prefix=settings.API_V1_PREFIX, dependencies=protected)
+app.include_router(reports.router, prefix=settings.API_V1_PREFIX, dependencies=protected)
+app.include_router(timeline.router, prefix=settings.API_V1_PREFIX, dependencies=protected)
+app.include_router(notifications.router, prefix=settings.API_V1_PREFIX, dependencies=protected)
+app.include_router(templates.router, prefix=settings.API_V1_PREFIX, dependencies=protected)
+app.include_router(api_keys.router, prefix=settings.API_V1_PREFIX, dependencies=protected)
+
+# Admin-only router
+app.include_router(
+    users.router,
+    prefix=settings.API_V1_PREFIX,
+    dependencies=[Depends(require_admin)],
+)
+
+
+# --- MCP HTTP (Streamable HTTP) ------------------------------------------
+# Gated by ``verify_mcp_api_key`` which enforces:
+#   - feature flag (platform_settings.mcp_http_enabled)
+#   - network policy (localhost / lan / any)
+#   - bearer API key validation
+# Streamable-HTTP uses POST for client→server messages, GET for the SSE
+# stream clients open to receive server-initiated events, and DELETE to
+# terminate the session.
+@app.api_route(
+    "/mcp",
+    methods=["GET", "POST", "DELETE"],
+    dependencies=[Depends(verify_mcp_api_key)],
+    include_in_schema=False,
+)
+async def mcp_endpoint(request: Request):
+    return await handle_mcp_request(request)
+
+
+@app.get("/")
+async def root():
+    """Root endpoint"""
+    return {
+        "message": f"{settings.PROJECT_NAME} API",
+        "tagline": settings.PROJECT_TAGLINE,
+        "version": settings.VERSION,
+        "docs": "/docs"
+    }
+
+
+@app.get("/health")
+async def health():
+    """Health check endpoint"""
+    return {"status": "healthy"}

@@ -1,0 +1,5 @@
+# Nemesis CLI Dependencies (for local nemesis.py launcher)
+# These are separate from backend dependencies
+click>=8.1.0
+httpx>=0.26.0
+rich>=13.7.0

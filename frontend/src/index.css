@@ -1,0 +1,361 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-neutral-200 dark:border-neutral-700;
+  }
+
+  body {
+    @apply bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 antialiased;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+
+  /* Scrollbar styling - Vercel like */
+  ::-webkit-scrollbar {
+    @apply w-2 h-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-neutral-300 dark:bg-neutral-600 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-neutral-400 dark:bg-neutral-500;
+  }
+
+  /* Selection color */
+  ::selection {
+    @apply bg-primary-100 dark:bg-primary-900 text-primary-900 dark:text-primary-100;
+  }
+}
+
+@layer components {
+
+  /* Button base - Improved rounded corners and padding */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-md font-medium text-sm transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-primary {
+    @apply bg-primary-600 text-white hover:bg-primary-700 active:bg-primary-800 shadow-sm hover:shadow;
+  }
+
+  .btn-secondary {
+    @apply bg-white dark:bg-neutral-800 text-neutral-700 dark:text-neutral-200 border border-neutral-300 dark:border-neutral-600 hover:bg-neutral-50 dark:hover:bg-neutral-700 hover:border-neutral-400 dark:hover:border-neutral-500 active:bg-neutral-100 dark:active:bg-neutral-600;
+  }
+
+  .btn-ghost {
+    @apply bg-transparent text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-neutral-900 dark:hover:text-neutral-100;
+  }
+
+  .btn-sm {
+    @apply px-3 py-1.5 text-sm;
+  }
+
+  .btn-xs {
+    @apply px-2 py-1 text-xs;
+  }
+
+  /* Input base */
+  .input {
+    @apply w-full px-3 py-2 bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 rounded-md text-sm text-neutral-900 dark:text-neutral-100 placeholder:text-neutral-400 dark:placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-600 focus:border-transparent transition-all;
+  }
+
+  .input-sm {
+    @apply px-2.5 py-1.5 text-sm;
+  }
+
+  /* Card base */
+  .card {
+    @apply bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl p-6 transition-all;
+  }
+
+  .card-hover {
+    @apply hover:border-neutral-300 dark:hover:border-neutral-600 hover:shadow-soft;
+  }
+
+  /* Badge */
+  .badge {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-md;
+  }
+
+  .badge-primary {
+    @apply bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300;
+  }
+
+  .badge-neutral {
+    @apply bg-neutral-100 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300;
+  }
+
+  /* Severity badges */
+  .badge-critical {
+    @apply bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300;
+  }
+
+  .badge-high {
+    @apply bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-300;
+  }
+
+  .badge-medium {
+    @apply bg-amber-100 dark:bg-amber-900 text-amber-700 dark:text-amber-300;
+  }
+
+  .badge-low {
+    @apply bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300;
+  }
+
+  .badge-info {
+    @apply bg-cyan-100 dark:bg-cyan-900 text-cyan-700 dark:text-cyan-300;
+  }
+
+  /* Editable field - Notion style */
+  .editable {
+    @apply relative cursor-text hover:bg-neutral-50 dark:hover:bg-neutral-800 px-2 py-1 -mx-2 -my-1 rounded transition-colors;
+  }
+
+  .editable:focus-within {
+    @apply bg-white dark:bg-neutral-800 ring-2 ring-primary-200 dark:ring-primary-700;
+  }
+
+  .editable-input {
+    @apply w-full bg-transparent border-none outline-none p-0 text-neutral-900 dark:text-neutral-100;
+  }
+
+  /* Table - Notion style */
+  .table-notion {
+    @apply w-full text-sm;
+  }
+
+  .table-notion thead {
+    @apply border-b border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900;
+  }
+
+  .table-notion th {
+    @apply px-4 py-3 text-left text-xs font-semibold text-neutral-600 dark:text-neutral-400 uppercase tracking-wider;
+  }
+
+  .table-notion td {
+    @apply px-4 py-3 border-b border-neutral-100 dark:border-neutral-700 text-neutral-900 dark:text-neutral-100;
+  }
+
+  .table-notion tbody tr {
+    @apply hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors;
+  }
+
+  /* Code block */
+  .code-block {
+    @apply bg-neutral-900 dark:bg-neutral-950 text-neutral-100 dark:text-neutral-200 p-4 rounded-lg font-mono text-sm overflow-x-auto border border-neutral-800 dark:border-neutral-700;
+  }
+
+  /* Stat card */
+  .stat-card {
+    @apply bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl p-6 hover:border-neutral-300 dark:hover:border-neutral-600 transition-all;
+  }
+
+  .stat-label {
+    @apply text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider;
+  }
+
+  .stat-value {
+    @apply text-2xl font-bold text-neutral-900 dark:text-neutral-100 mt-2;
+  }
+
+  .stat-trend {
+    @apply text-xs text-neutral-500 dark:text-neutral-400 mt-1;
+  }
+
+  /* Section header */
+  .section-header {
+    @apply text-sm font-semibold text-neutral-900 dark:text-neutral-100 mb-4 flex items-center gap-2;
+  }
+
+  /* Divider */
+  .divider {
+    @apply border-t border-neutral-200 dark:border-neutral-700 my-6;
+  }
+
+  /* Empty state */
+  .empty-state {
+    @apply text-center py-12 px-4;
+  }
+
+  .empty-state-icon {
+    @apply w-12 h-12 mx-auto text-neutral-400 dark:text-neutral-600 mb-4;
+  }
+
+  .empty-state-title {
+    @apply text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-2;
+  }
+
+  .empty-state-text {
+    @apply text-sm text-neutral-500 dark:text-neutral-400;
+  }
+
+  /* Prose custom - Markdown rendering with proper dark mode */
+  .prose-custom {
+    @apply text-neutral-900 dark:text-neutral-100;
+    line-height: 1.75;
+    max-width: none;
+  }
+
+  .prose-custom h1,
+  .prose-custom h2,
+  .prose-custom h3,
+  .prose-custom h4,
+  .prose-custom h5,
+  .prose-custom h6 {
+    @apply text-neutral-900 dark:text-neutral-100 font-semibold;
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+  }
+
+  .prose-custom h1 {
+    font-size: 1.875rem;
+  }
+
+  .prose-custom h2 {
+    font-size: 1.5rem;
+  }
+
+  .prose-custom h3 {
+    font-size: 1.25rem;
+  }
+
+  .prose-custom h4 {
+    font-size: 1.125rem;
+  }
+
+  .prose-custom p {
+    @apply text-neutral-700 dark:text-neutral-300;
+    margin-top: 1em;
+    margin-bottom: 1em;
+  }
+
+  .prose-custom ul,
+  .prose-custom ol {
+    @apply text-neutral-700 dark:text-neutral-300;
+    margin-top: 0.75em;
+    margin-bottom: 0.75em;
+    padding-left: 1.5em;
+  }
+
+  .prose-custom li {
+    margin-top: 0.25em;
+    margin-bottom: 0.25em;
+  }
+
+  .prose-custom code {
+    @apply bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100;
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+    font-size: 0.875em;
+  }
+
+  .prose-custom pre {
+    @apply bg-neutral-900 dark:bg-neutral-950 text-neutral-100;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    margin-top: 1em;
+    margin-bottom: 1em;
+  }
+
+  .prose-custom pre code {
+    @apply bg-transparent text-neutral-100;
+    padding: 0;
+  }
+
+  .prose-custom a {
+    @apply text-primary-600 dark:text-primary-400;
+    text-decoration: none;
+  }
+
+  .prose-custom a:hover {
+    text-decoration: underline;
+  }
+
+  .prose-custom strong {
+    @apply font-semibold text-neutral-900 dark:text-neutral-100;
+  }
+
+  .prose-custom em {
+    font-style: italic;
+  }
+
+  .prose-custom blockquote {
+    @apply border-l-4 border-neutral-300 dark:border-neutral-600 pl-4 italic text-neutral-600 dark:text-neutral-400;
+    margin-top: 1em;
+    margin-bottom: 1em;
+  }
+
+  .prose-custom hr {
+    @apply border-neutral-200 dark:border-neutral-700;
+    margin-top: 2em;
+    margin-bottom: 2em;
+  }
+
+  .prose-custom table {
+    @apply w-full text-sm border-collapse;
+    margin-top: 1em;
+    margin-bottom: 1em;
+  }
+
+  .prose-custom th {
+    @apply bg-neutral-50 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100;
+    padding: 0.5rem;
+    border: 1px solid theme('colors.neutral.200');
+  }
+
+  .dark .prose-custom th {
+    border-color: theme('colors.neutral.700');
+  }
+
+  .prose-custom td {
+    @apply text-neutral-700 dark:text-neutral-300;
+    padding: 0.5rem;
+    border: 1px solid theme('colors.neutral.200');
+  }
+
+  .dark .prose-custom td {
+    border-color: theme('colors.neutral.700');
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .animate-in {
+    animation: fadeIn 0.2s ease-in-out;
+  }
+
+  .slide-in {
+    animation: slideIn 0.3s ease-out;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.3s ease-out;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

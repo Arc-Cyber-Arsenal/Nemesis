@@ -1,0 +1,75 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+*.egg-info/
+dist/
+build/
+
+# Logs
+*.log
+*.log.*
+backend.log
+frontend.log
+backend/logs/*.log
+backend/logs/*.log.*
+!backend/logs/.gitkeep
+
+# Environment
+.env
+.env.local
+.env.*.local
+backend/.env
+frontend/.env
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-error.log*
+yarn-debug.log*
+.pnpm-debug.log*
+dist/
+
+# Database
+*.db
+*.sqlite
+postgres_data/
+
+# Legacy scripts (old non-Docker startup - backup only)
+start-legacy.sh
+stop-legacy.sh
+
+# MCP config (contains API keys) and local runtime state
+/.aida/mcp-config.json
+/.aida/container-preference
+/.aida/session
+/.aida/api-key
+
+# Docker
+docker-compose.override.yml
+switch-db.sh
+
+# Artifacts directory (Gemini/Antigravity)
+.gemini/
+
+# Claude Code internal files
+.claude/
+
+# TLS — Caddyfile generated dynamically by start.sh in --lan / --domain mode
+/.aida/Caddyfile
