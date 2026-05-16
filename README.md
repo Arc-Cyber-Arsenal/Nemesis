@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./assets/banner1.png" alt="Nemesis Banner" width="100%">
+  <img src="https://raw.githubusercontent.com/Arc-Cyber-Arsenal/Nemesis/master/NEMESIS.png" alt="403-Killchain Banner" width="600">
 </p>
 
 <h1 align="center">AI-Driven Security Assessment</h1>
