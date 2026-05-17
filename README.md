@@ -5,28 +5,7 @@
 <h1 align="center">AI-Driven Security Assessment</h1>
 <h3 align="center">Autonomous Pentesting Agent</h3>
 
-<p align="center">
-  An agent that runs full security assessments end-to-end.<br>
-  You define the scope. You review the findings.
-</p>
 
-<p align="center">
-  <a href="#quick-start">Quick Start</a> •
-  <a href="#what-it-does">What It Does</a> •
-  <a href="Docs/INSTALLATION.md">Installation</a> •
-  <a href="Docs/USER_GUIDE.md">User Guide</a> •
-  <a href="Docs/MCP_TOOLS.md">Agent Tools</a> •
-  <a href="https://discord.gg/RVJTWtkVA2">Discord</a>
-</p>
-
-<p align="center">
-  <img src="https://img.shields.io/badge/License-AGPL_v3-blue" alt="License">
-  <img src="https://img.shields.io/badge/Agent-Autonomous-red" alt="Autonomous">
-  <img src="https://img.shields.io/badge/Models-Claude%20%7C%20Gemini%20%7C%20GPT%20%7C%20Any-green" alt="Models">
-  <img src="https://img.shields.io/badge/Version-1.1.0-purple" alt="Version">
-  <a href="https://github.com/Archsec-Emman/Nemesis/stargazers"><img src="https://img.shields.io/github/stars/Archsec-Emman/Nemesis?style=flat&label=Stars&color=gold" alt="GitHub Stars"></a>
-  <a href="https://discord.gg/RVJTWtkVA2"><img src="https://img.shields.io/badge/Discord-Join%20Community-5865F2?logo=discord&logoColor=white" alt="Discord"></a>
-</p>
 
 ---
 
@@ -37,9 +16,6 @@ and documents every finding with the commands used.
 
 ---
 
-<p align="center">
-  <img src="./assets/view4.png" alt="Nemesis Dashboard" width="800">
-</p>
 
 ---
 
