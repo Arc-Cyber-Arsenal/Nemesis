@@ -201,9 +201,6 @@ Issues and PRs welcome → [GitHub Issues](https://github.com/Archsec-Emman/Neme
 
 ---
 
-<p align="center">
-  Questions or feedback? Join the community on <a href="https://discord.gg/RVJTWtkVA2"><strong>Discord</strong></a>
-</p>
 
 <p align="center">
   <a href="https://github.com/Archsec-Emman/Nemesis">⭐ Star on GitHub</a> •
